@@ -7,7 +7,7 @@
 
 <div class="card">
     <div class="card-body">
-        <form action="/admin/categorias/nova" method="POST">
+        <form action="/admin/postagens/nova" method="POST">
             <label for="categoria">Categoria: </label>
             <select name="categoria" id="categoria" class="form-control">
                 {{#if categorias}}
@@ -20,12 +20,12 @@
                     <option value="0">Nenhuma categoria registrada</option>
                 {{/each}}
             </select>
-            <label for="nome">Nome: </label>
-            <input type="text" id="nome" name="nome" placeholder="Nome da Categoria" class="form-control">
+            <label for="titulo">Nome: </label>
+            <input type="text" id="titulo" name="titulo" placeholder="titulo da Postagem" class="form-control">
             <label for="slug">Slug: </label>
-            <input type="text" id="slug" name="slug" placeholder="Slug da Categoria" class="form-control">
+            <input type="text" id="slug" name="slug" placeholder="Slug da Postagem" class="form-control">
             <label for="descricao">Descrição: </label>
-            <input type="text" name="descricao" class="form-control">
+            <input type="text" name="descricao" placeholder="Descrição da Postagem" class="form-control">
             <label for="conteudo">Conteudo: </label>
             <textarea name="conteudo" id="conteudo" cols="10" rows="5" class="form-control"></textarea>
             <button type="submit" class="btn btn-success mt-3">Adicionar</button>

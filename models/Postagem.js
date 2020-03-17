@@ -20,7 +20,7 @@ const Postagem = new Schema({
     },
     categoria: {
         type: Schema.Types.ObjectId, // -> vai armazenar o id de algum objeto que no caso é a categoria, na ref passa o nome que vc deu pro model
-        ref: categorias,
+        ref: "categorias",
         required: true
     },
     data: {

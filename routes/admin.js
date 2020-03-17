@@ -1,8 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
+
 require('../models/Categoria');
 const Categoria = mongoose.model("categorias");
+
+require('../models/Postagem');
+const Postagem = mongoose.model("postagens");
 
 router.get('/', (req, res) => {
     res.render("admin/index");
@@ -148,6 +152,83 @@ router.get('/postagens/add', (req, res) => {
         req.flash("error_msg", "Houve um erro ao carregar o form de postagens.");
         res.redirect('/admin/postagens');
     });
+});
+
+router.post('/postagens/nova', (req, res) => {
+    let erros = [];
+
+    if(req.body.categoria == "0"){
+        erros.push({
+            text: "Selecione a categoria, ou cadastre uma categoria."
+        });
+    }
+
+    if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
+        erros.push({
+            text: "Titulo inválido"
+        });
+    }else if(req.body.titulo.length < 2){
+        erros.push({
+            text: "Titulo da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.conteudo || typeof req.body.conteudo == undefined || req.body.conteudo == null){
+        erros.push({
+            text: "Conteudo inválido"
+        });
+    }else if(req.body.conteudo.length < 2){
+        erros.push({
+            text: "Conteudo da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
+        erros.push({
+            text: "Descrição inválido"
+        });
+    }else if(req.body.descricao.length < 2){
+        erros.push({
+            text: "Descrição da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+        erros.push({
+            text: "Slug inválido"
+        });
+    }
+
+    if(erros.length > 0){
+        Categoria.find().then((categorias) => {
+            res.render("admin/addpostagem", {
+                erros: erros,
+                categorias: categorias
+            });
+        }).catch((err) => {
+            res.render("admin/postagens", {
+                erros: erros
+            });
+        });
+        
+    }else{
+        const novaPostagem = {
+            titulo: req.body.titulo,
+            descricao: req.body.descricao,
+            conteudo: req.body.conteudo,
+            categoria: req.body.categoria,
+            slug: req.body.slug
+        }
+
+        new Postagem(novaPostagem).save().then(() => {
+            req.flash("success_msg", "Postagem cadastrada com sucesso.");
+            res.redirect("/admin/postagens");
+        }).catch((err) => {
+            req.flash("error_msg", "Ocorreu um erro ao cadastrar a postagem, tente novamente. Erro: " + err);
+            res.redirect("/admin/postagens");
+        });
+    }
+
 });
 
 module.exports = router;
