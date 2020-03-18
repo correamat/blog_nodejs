@@ -4,27 +4,26 @@
     <button class="btn btn-success">Adicionar Postagem</button>
 </a>
 
-<!--<table class="table table-striped mt-5">
+<table class="table table-striped mt-4">
   <thead>
     <tr>
       <th scope="col">Data</th>
-      <th scope="col">Nome</th>
-      <th scope="col">Slug</th>
+      <th scope="col">Categoria</th>
+      <th scope="col">Titulo</th>
+      <th scope="col">Descrição</th>
       <th scope="col">Ações</th>
     </tr>
   </thead>
   <tbody>
-    {{#each categorias}}
+    {{#each postagens}}
         <tr>
-            <td>{{date}}</td>
-            <td>{{nome}}</td>
-            <td>{{slug}}</td>
+            <td>{{data}}</td>
+            <td>{{categoria.nome}}</td>
+            <td>{{titulo}}</td>
+            <td>{{descricao}}</td>
             <td>
-              <a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-primary">Editar</button></a>
-              <form action="/admin/categorias/deletar" method="POST"  style="display: inline-block;">
-                  <input type="hidden" name="id" value="{{_id}}">
-                  <button type="submit" class="btn btn-danger"> Deletar </button>
-              </form>
+              <a href="/admin/postagens/edit/{{_id}}"><button class="btn btn-primary mb-2">Editar</button></a>
+              <a href="/admin/postagens/deletar/{{_id}}"><button class="btn btn-danger mb-2">Excluir</button></a>
             </td>
         </tr>
     {{else}}
@@ -33,4 +32,4 @@
       </tr>
     {{/each}}
   </tbody>
-</table>-->
+</table>

@@ -142,7 +142,13 @@ router.post('/categorias/deletar', (req, res) =>{
 });
 
 router.get('/postagens', (req, res) => {
-    res.render('admin/postagens');
+    Postagem.find().populate("categoria").sort({data: "desc"}).then((postagens)  => {
+        res.render('admin/postagens', {postagens: postagens});
+    }).catch((err) => {
+        req.flash('error_msg', 'Houve um erro ao listar as postagens');
+        res.redirect('/admin');
+    });
+    
 });
 
 router.get('/postagens/add', (req, res) => {
@@ -229,6 +235,120 @@ router.post('/postagens/nova', (req, res) => {
         });
     }
 
+});
+
+router.get("/postagens/edit/:id", (req, res) => {
+    Postagem.findOne({_id: req.params.id}).then((postagens) => {
+        Categoria.find().then((categorias) => {
+            res.render("admin/editpostagens", {
+                postagens: postagens,
+                categorias: categorias
+            });
+        }).catch((err) => {
+            req.flash("error_msg", "Houve um erro ao carregar o form de postagens: " + err);
+            res.redirect('/admin/postagens');
+        });
+    }).catch((err) => {
+        req.flash("error_msg", "Houve um erro ao carregar o form de postagens: " + err);
+        res.redirect('/admin/postagens');
+    }); 
+});
+
+router.post("/postagem/edit", (req, res) => {
+
+    let erros = [];
+
+    if(req.body.categoria == "0"){
+        erros.push({
+            text: "Selecione a categoria, ou cadastre uma categoria."
+        });
+    }
+
+    if(!req.body.titulo || typeof req.body.titulo == undefined || req.body.titulo == null){
+        erros.push({
+            text: "Titulo inválido"
+        });
+    }else if(req.body.titulo.length < 2){
+        erros.push({
+            text: "Titulo da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.conteudo || typeof req.body.conteudo == undefined || req.body.conteudo == null){
+        erros.push({
+            text: "Conteudo inválido"
+        });
+    }else if(req.body.conteudo.length < 2){
+        erros.push({
+            text: "Conteudo da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.descricao || typeof req.body.descricao == undefined || req.body.descricao == null){
+        erros.push({
+            text: "Descrição inválido"
+        });
+    }else if(req.body.descricao.length < 2){
+        erros.push({
+            text: "Descrição da postagem muito pequeno."
+        });
+    }
+
+    if(!req.body.slug || typeof req.body.slug == undefined || req.body.slug == null){
+        erros.push({
+            text: "Slug inválido"
+        });
+    }
+
+    if(erros.length > 0){
+        Postagem.findOne({_id: req.body.id}).then((postagens) => {
+            Categoria.find().then((categorias) => {
+                res.render("admin/editpostagens", {
+                    erros: erros,
+                    categorias: categorias,
+                    postagens: postagens
+                });
+        });
+        
+        }).catch((err) => {
+            res.render("admin/postagens", {
+                erros: erros
+            });
+        });
+        
+    }else{
+
+        Postagem.findOne({_id: req.body.id}).then((postagem) => {
+
+            postagem.titulo = req.body.titulo;
+            postagem.descricao = req.body.descricao;
+            postagem.slug = req.body.slug;
+            postagem.conteudo = req.body.conteudo;
+            postagem.categoria = req.body.categoria;
+
+            postagem.save().then(() => {
+                req.flash("success_msg", "Postagem atualizada com sucesso.");
+                res.redirect("/admin/postagens");
+            }).catch(() => {
+                req.flash("error_msg", "Houve um erro atualizar a postagem: " + err);
+                res.redirect("/admin/postagens");
+            });
+
+        }).catch((err) => {
+            req.flash("error_msg", "Houve um erro atualizar a postagem: " + err);
+            res.redirect("/admin/postagens");
+        });
+    }
+});
+
+router.get("/postagens/deletar/:id", (req, res) => {
+    Postagem.remove({_id: req.params.id}).then(() => {
+        req.flash("success_msg", "Postagem excluida com sucesso.");
+        res.redirect("/admin/postagens");
+    }).catch((err) => {
+        req.flash("error_msg", "Houve um erro deletar a postagem: " + err);
+        res.redirect("/admin/postagens");
+    });
 });
 
 module.exports = router;

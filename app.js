@@ -37,7 +37,7 @@ const flash = require('connect-flash');
         defaultLayout: 'main',
         allowedProtoMethods: true,
         allowProtoMethodsByDefault: true
-    }
+        }
     ));
     app.set('view engine', 'handlebars');
 
