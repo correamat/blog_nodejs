@@ -16,6 +16,8 @@ const Postagem = mongoose.model("postagens");
 require("./models/Categoria");
 const Categoria = mongoose.model("categorias");
 
+const rotasUsuarios = require('./routes/usuario');
+
 //Configurações
     //SESSION
     app.use(session({
@@ -122,6 +124,7 @@ app.get("/categorias/:slug", (req, res) => {
 });
 
 app.use('/admin', rotasAdmin);
+app.use('/usuarios', rotasUsuarios);
 
 // OUTROS
 const PORT = 8081;
