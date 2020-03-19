@@ -1,0 +1,31 @@
+<h3 class="text-center"> Lista de Categorias </h3>
+<table class="table table-striped mt-5">
+  <thead>
+    <tr>
+      <th scope="col">Data</th>
+      <th scope="col">Nome</th>
+      <th scope="col">Slug</th>
+      <th scope="col">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{#each categorias}}
+        <tr>
+            <td>{{date}}</td>
+            <td><a href="/categorias/{{slug}}" style="cursor: pointer; text-decoration:none; color: #000;">{{nome}}</a></td>
+            <td>{{slug}}</td>
+            <td>
+              <a href="/admin/categorias/edit/{{_id}}"><button class="btn btn-primary">Editar</button></a>
+              <form action="/admin/categorias/deletar" method="POST"  style="display: inline-block;">
+                  <input type="hidden" name="id" value="{{_id}}">
+                  <button type="submit" class="btn btn-danger"> Deletar </button>
+              </form>
+            </td>
+        </tr>
+    {{else}}
+      <tr>
+        <td colspan="4">Nenhuma categoria registrada.</td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>
