@@ -18,6 +18,9 @@ const Categoria = mongoose.model("categorias");
 
 const rotasUsuarios = require('./routes/usuario');
 
+const passport = require("passport");
+require("./config/auth")(passport);
+
 //Configurações
     //SESSION
     app.use(session({
@@ -25,6 +28,9 @@ const rotasUsuarios = require('./routes/usuario');
         resave: true,
         saveUninitialized: true
     }));
+
+    app.use(passport.initialize());
+    app.use(passport.session());
 
     //FLASH
     app.use(flash());
@@ -34,6 +40,9 @@ const rotasUsuarios = require('./routes/usuario');
         //res.locals -> variavel global é assim que eu crio.
         res.locals.success_msg = req.flash("success_msg");
         res.locals.error_msg = req.flash("error_msg");
+        res.locals.error = req.flash("error");
+        //PASSPORT CRIA ARMAZENANDO OS DADOS DO USUARIO LOGADO, SE NÃO EXISTE USUARIO E NULL
+        res.locals.user = req.user || null;
         next(); //PARA AVANÇAR SE EU NÃO TIVER O NEXT ELE VAI FICAR INFINITAMENTE AI
     });
 
